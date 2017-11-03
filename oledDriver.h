@@ -68,6 +68,12 @@ public:
 
 	void displayTest();
 
+	void displayTime();
+
+	void clearScreen();
+
+	void setCipArea(char, char, char, char);
+
 	
 };
 

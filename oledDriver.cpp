@@ -40,22 +40,22 @@ void oledDriver::init(){
 	sendCommand(setMuxRatio);
 	sendCommand(0x3F); 						//MUX ratio 64
 
-	//set display offset
+	//Set display offset
 	sendCommand(setDisplayOffset);
 	sendCommand(0x00);
 
-	//set display startline
+	//Set display startline
 	sendCommand(0x40);
 	
-	//set contrast control
+	//Set contrast control
 	sendCommand(setContrastControl);
 	sendCommand(0x7F);
 
-	//set segment remap to A0
-	//set according to hardware specs for our module
+	//Set segment remap to A0
+	//Set according to hardware specs for our module
 	sendCommand(0xA0);
 
-	//set COM output scan direction
+	//Set COM output scan direction
 	sendCommand(setCOMOutputScanDirectionNormal);
 
 
@@ -63,26 +63,26 @@ void oledDriver::init(){
 	sendCommand(setPrechargePeriod);
 	sendCommand(0xF1);
 
-	//set com pins hardware configuration to 0x12
+	//Set com pins hardware configuration to 0x12
 	sendCommand(setCOMHardwareConfig);
 	sendCommand(0x12);
 		
-	//set Vcomh
+	//Set Vcomh (What is Vcomh ???????????)
 	sendCommand(setVCOMHDeselectLevel);
 	sendCommand(0x30);
 
-	//set oscillator frequency
+	//Set oscillator frequency
 	sendCommand(setClockDivider);
 	sendCommand(0x80);
 
 	//Disable scroll
 	sendCommand(Deactivate_Scroll_Cmd);
 
-	//enable charge pump regulator
+	//Enable charge pump regulator
 	sendCommand(setChargePumpSetting);
 	sendCommand(enableChargePump);
 
-	//set entire display on
+	//Set entire display on
 	sendCommand(setDisplayOn);
 
 }
@@ -103,6 +103,16 @@ void oledDriver::sendCommand(char command) {
 	TinyWireM.endTransmission();
 }
 
+void oledDriver::setCipArea(char startPage, char endPage, char startCollum, char endCollum){
+	sendCommand(setPageAddress);
+	sendCommand(startPage);
+	sendCommand(endPage);
+
+	sendCommand(setColumnAddress);
+	sendCommand(startCollum);
+	sendCommand(endCollum); 
+}
+
 void oledDriver::displayTest() {
 	sendCommand(setPageAddress);
 	sendCommand(0x00);
@@ -118,7 +128,40 @@ void oledDriver::displayTest() {
 	}
 }
 
+void oledDriver::clearScreen() {
+	// sendCommand(setPageAddress);
+	// sendCommand(0x00);
+	// sendCommand(0x07);
+
+	// sendCommand(setColumnAddress);
+	// sendCommand(0x00);
+	// sendCommand(0x7F);
+
+	setCipArea(0x00, 0x07, 0x00, 0x7F);
+	
+	for (char i = 0; i < 8; i++){
+		for (uint8_t j = 0; j < 128; j++){
+			sendData(0x00);
+		}
+	}
+	delay(100);
+}
+
 void oledDriver::displayTime() {
 	//8*25
-	//
+
+	clearScreen();
+
+	sendCommand(setPageAddress);
+	sendCommand(0x04);
+	sendCommand(0x04);
+
+	sendCommand(setColumnAddress);
+	sendCommand(0x00);
+	sendCommand(0x19);
+	
+	for (char i = 0; i<=25; i++) {
+		// for (char j=0; j<=16; j++)
+		sendData(i);
+	}
 }
