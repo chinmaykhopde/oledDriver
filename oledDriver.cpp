@@ -95,6 +95,17 @@ void oledDriver::sendData(char data) {
 	TinyWireM.endTransmission();
 }
 
+void oledDriver::sendDataArray(char *charDataArray, int length) {
+	TinyWireM.begin();
+	TinyWireM.beginTransmission(SlaveAddress);
+	TinyWireM.send(dataMode);
+	for (int i=0; i<length; i++) {
+		TinyWireM.send(*charDataArray);
+		charDataArray++;
+	}
+	TinyWireM.endTransmission();
+}
+
 void oledDriver::sendCommand(char command) {
 	TinyWireM.begin();
 	TinyWireM.beginTransmission(SlaveAddress);
@@ -103,7 +114,7 @@ void oledDriver::sendCommand(char command) {
 	TinyWireM.endTransmission();
 }
 
-void oledDriver::setCipArea(char startPage, char endPage, char startCollum, char endCollum){
+void oledDriver::setAreaToUpdate(char startPage, char endPage, char startCollum, char endCollum){
 	sendCommand(setPageAddress);
 	sendCommand(startPage);
 	sendCommand(endPage);
@@ -114,14 +125,15 @@ void oledDriver::setCipArea(char startPage, char endPage, char startCollum, char
 }
 
 void oledDriver::displayTest() {
-	sendCommand(setPageAddress);
-	sendCommand(0x00);
-	sendCommand(0x07);
+	// sendCommand(setPageAddress);
+	// sendCommand(0x00);
+	// sendCommand(0x07);
 
-	sendCommand(setColumnAddress);
-	sendCommand(0x00);
-	sendCommand(0x7F); 
+	// sendCommand(setColumnAddress);
+	// sendCommand(0x00);
+	// sendCommand(0x7F); 
 
+	setAreaToUpdate(0x00,0x07,0x00, 0x7F);
 	for (char i = 0; i<=60; i++) {
 		for (char j=0; j<=16; j++)
 		sendData(j);
@@ -129,39 +141,48 @@ void oledDriver::displayTest() {
 }
 
 void oledDriver::clearScreen() {
-	// sendCommand(setPageAddress);
-	// sendCommand(0x00);
-	// sendCommand(0x07);
 
-	// sendCommand(setColumnAddress);
-	// sendCommand(0x00);
-	// sendCommand(0x7F);
-
-	setCipArea(0x00, 0x07, 0x00, 0x7F);
+	// Set the Screen area to update
+	setAreaToUpdate(0x00, 0x07, 0x00, 0x7F);
 	
-	for (char i = 0; i < 8; i++){
-		for (uint8_t j = 0; j < 128; j++){
-			sendData(0x00);
+	// char dataArray[10]={};
+	// for (char i = 0; i < 10; i++){
+	// 	dataArray[i] = 0xFF;
+	// }
+	// sendDataArray(dataArray, 10);
+
+	for (int i=0; i<(128*8)/16 ; i++) {
+		
+	TinyWireM.begin();
+	TinyWireM.beginTransmission(SlaveAddress);
+	TinyWireM.send(dataMode);
+
+		for (int i =0; i<16; i++) { 				//16 is the limit of tinywire i2c data frame
+			TinyWireM.send(0xFF);
 		}
+
+	TinyWireM.endTransmission();
 	}
-	delay(100);
+
+	//delay(100);
 }
 
 void oledDriver::displayTime() {
 	//8*25
 
 	clearScreen();
+	delay(3000);
+	// sendCommand(setPageAddress);
+	// sendCommand(0x04);
+	// sendCommand(0x04);
 
-	sendCommand(setPageAddress);
-	sendCommand(0x04);
-	sendCommand(0x04);
+	// sendCommand(setColumnAddress);
+	// sendCommand(0x00);
+	// sendCommand(0x19);
 
-	sendCommand(setColumnAddress);
-	sendCommand(0x00);
-	sendCommand(0x19);
-	
+
 	for (char i = 0; i<=25; i++) {
-		// for (char j=0; j<=16; j++)
+		for (char j=0; j<=16; j++)
 		sendData(i);
 	}
 }
