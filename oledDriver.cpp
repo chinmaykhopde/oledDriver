@@ -99,11 +99,41 @@ void oledDriver::sendDataArray(char *charDataArray, int length) {
 	TinyWireM.begin();
 	TinyWireM.beginTransmission(SlaveAddress);
 	TinyWireM.send(dataMode);
-	for (int i=0; i<length; i++) {
-		TinyWireM.send(*charDataArray);
-		charDataArray++;
+	if (length <= 16) {
+		for (int i=0; i<length; i++) {
+			TinyWireM.send(*charDataArray);
+			charDataArray++;
+		}
+		TinyWireM.endTransmission();
 	}
-	TinyWireM.endTransmission();
+
+	else {
+		int remainderOfLength = length%16;
+		length = length / 16;
+
+		TinyWireM.begin();
+		TinyWireM.beginTransmission(SlaveAddress);
+		TinyWireM.send(dataMode);
+
+		for (int i =0; i <= length; i++){
+			for(int j=0; j<= 16; j++){
+				TinyWireM.send(*charDataArray);
+				charDataArray++;
+			}
+		TinyWireM.endTransmission();
+		}
+
+		TinyWireM.begin();
+		TinyWireM.beginTransmission(SlaveAddress);
+		TinyWireM.send(dataMode);
+		
+		for (int i=0; i <= remainderOfLength; i++){
+			TinyWireM.send(*charDataArray);
+			charDataArray++;
+		}
+
+		TinyWireM.endTransmission();	
+	}
 }
 
 void oledDriver::sendCommand(char command) {
@@ -125,14 +155,6 @@ void oledDriver::setAreaToUpdate(char startPage, char endPage, char startCollum,
 }
 
 void oledDriver::displayTest() {
-	// sendCommand(setPageAddress);
-	// sendCommand(0x00);
-	// sendCommand(0x07);
-
-	// sendCommand(setColumnAddress);
-	// sendCommand(0x00);
-	// sendCommand(0x7F); 
-
 	setAreaToUpdate(0x00,0x07,0x00, 0x7F);
 	for (char i = 0; i<=60; i++) {
 		for (char j=0; j<=16; j++)
@@ -152,29 +174,22 @@ void oledDriver::clearScreen() {
 	TinyWireM.beginTransmission(SlaveAddress);
 	TinyWireM.send(dataMode);
 		for (int i =0; i<16; i++) { 
-			TinyWireM.send(0xFF);
+			TinyWireM.send(0x00);
 		}
 	TinyWireM.endTransmission();
 	}
 
 }
+//For 5*8 bitmaps
+void oledDriver::display5x8Char(unsigned char asciiChar, char posX, char posY) {				//Page is Y
+	
+	unsigned char asciiAddress = (unsigned char) ourFonts + asciiChar*5;
+	setAreaToUpdate(posY, posY, posX, posX + 5);
+	
+	char asciiData[5];
 
-void oledDriver::displayTime() {
-	//8*25
-
-	clearScreen();
-	delay(3000);
-	// sendCommand(setPageAddress);
-	// sendCommand(0x04);
-	// sendCommand(0x04);
-
-	// sendCommand(setColumnAddress);
-	// sendCommand(0x00);
-	// sendCommand(0x19);
-
-
-	for (char i = 0; i<=25; i++) {
-		for (char j=0; j<=16; j++)
-		sendData(i);
+	for(int i=0; i<5; i++) {
+		asciiData[i] = pgm_read_word_near(asciiAddress+i);
 	}
+	sendDataArray(asciiData, 5);
 }
