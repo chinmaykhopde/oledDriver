@@ -145,26 +145,18 @@ void oledDriver::clearScreen() {
 	// Set the Screen area to update
 	setAreaToUpdate(0x00, 0x07, 0x00, 0x7F);
 	
-	// char dataArray[10]={};
-	// for (char i = 0; i < 10; i++){
-	// 	dataArray[i] = 0xFF;
-	// }
-	// sendDataArray(dataArray, 10);
-
-	for (int i=0; i<(128*8)/16 ; i++) {
-		
+	//16 is the limit of tinywire i2c data frame
+	//Optimised clearscreen
+	for (int i=0; i<(128*8)/16 ; i++) {		
 	TinyWireM.begin();
 	TinyWireM.beginTransmission(SlaveAddress);
 	TinyWireM.send(dataMode);
-
-		for (int i =0; i<16; i++) { 				//16 is the limit of tinywire i2c data frame
+		for (int i =0; i<16; i++) { 
 			TinyWireM.send(0xFF);
 		}
-
 	TinyWireM.endTransmission();
 	}
 
-	//delay(100);
 }
 
 void oledDriver::displayTime() {
