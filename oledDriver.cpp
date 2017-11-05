@@ -193,3 +193,19 @@ void oledDriver::display5x8Char(unsigned char asciiChar, char posX, char posY) {
 	}
 	sendDataArray(asciiData, 5);
 }
+
+
+//Draw 10x16 font
+// void oledDriver::display10x16Char(unsigned char asciiChar, char posX, char posY) {				//Page is Y
+	
+// 	unsigned char asciiAddress = (unsigned char) ourFonts + asciiChar*5;
+// 	setAreaToUpdate(posY, posY, posX, posX + 5);
+	
+// 	char asciiData[5];
+
+// 	for(int i=0; i<5; i++) {
+// 		asciiData[i] = pgm_read_word_near(asciiAddress+i);
+// 	}
+// 	sendDataArray(asciiData, 5);
+// }
+// void oledDriver::drawLine(char posX1, char posY2, char)
