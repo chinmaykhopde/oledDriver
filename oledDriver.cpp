@@ -9,7 +9,6 @@ void oledDriver::init(){
 
 	delay(5); //Wait for SSD1306 to start
 
-	
 	//set display off
 	sendCommand(setDisplaySleep);
 
@@ -76,7 +75,7 @@ void oledDriver::init(){
 	sendCommand(0x80);
 
 	//Disable scroll
-	sendCommand(Deactivate_Scroll_Cmd);
+	sendCommand(deactivateScroll);
 
 	//Enable charge pump regulator
 	sendCommand(setChargePumpSetting);
@@ -96,6 +95,7 @@ void oledDriver::sendData(char data) {
 }
 
 void oledDriver::sendDataArray(char *charDataArray, int length) {
+
 	TinyWireM.begin();
 	TinyWireM.beginTransmission(SlaveAddress);
 	TinyWireM.send(dataMode);
@@ -115,8 +115,8 @@ void oledDriver::sendDataArray(char *charDataArray, int length) {
 		TinyWireM.beginTransmission(SlaveAddress);
 		TinyWireM.send(dataMode);
 
-		for (int i =0; i <= length; i++){
-			for(int j=0; j<= 16; j++){
+		for (int i =0; i < length; i++){
+			for(int j=0; j < 16; j++){
 				TinyWireM.send(*charDataArray);
 				charDataArray++;
 			}
@@ -127,7 +127,7 @@ void oledDriver::sendDataArray(char *charDataArray, int length) {
 		TinyWireM.beginTransmission(SlaveAddress);
 		TinyWireM.send(dataMode);
 		
-		for (int i=0; i <= remainderOfLength; i++){
+		for (int i=0; i < remainderOfLength; i++){
 			TinyWireM.send(*charDataArray);
 			charDataArray++;
 		}
@@ -154,12 +154,19 @@ void oledDriver::setAreaToUpdate(char startPage, char endPage, char startCollum,
 	sendCommand(endCollum); 
 }
 
-void oledDriver::displayTest() {
+void oledDriver::displayFill() {
+
 	setAreaToUpdate(0x00,0x07,0x00, 0x7F);
-	for (char i = 0; i<=60; i++) {
-		for (char j=0; j<=16; j++)
-		sendData(j);
-	}
+
+	for (int i=0; i<(128*8)/16 ; i++) {		
+		TinyWireM.begin();
+		TinyWireM.beginTransmission(SlaveAddress);
+		TinyWireM.send(dataMode);
+			for (int i =0; i<16; i++) { 
+				TinyWireM.send(0xFF);
+			}
+		TinyWireM.endTransmission();
+		}
 }
 
 void oledDriver::clearScreen() {
@@ -169,6 +176,7 @@ void oledDriver::clearScreen() {
 	
 	//16 is the limit of tinywire i2c data frame
 	//Optimised clearscreen
+	
 	for (int i=0; i<(128*8)/16 ; i++) {		
 	TinyWireM.begin();
 	TinyWireM.beginTransmission(SlaveAddress);
@@ -180,10 +188,11 @@ void oledDriver::clearScreen() {
 	}
 
 }
+
 //For 5*8 bitmaps
 void oledDriver::display5x8Char(unsigned char asciiChar, char posX, char posY) {				//Page is Y
 	
-	unsigned char asciiAddress = (unsigned char) ourFonts + asciiChar*5;
+	unsigned char asciiAddress = (unsigned char) our5x8Font + asciiChar*5;
 	setAreaToUpdate(posY, posY, posX, posX + 5);
 	
 	char asciiData[5];
@@ -191,10 +200,10 @@ void oledDriver::display5x8Char(unsigned char asciiChar, char posX, char posY) {
 	for(int i=0; i<5; i++) {
 		asciiData[i] = pgm_read_word_near(asciiAddress+i);
 	}
-	sendDataArray(asciiData, 5);
+	sendDataArray(asciiData ,5);
 }
 
-
+#pragma regin
 //Draw 10x16 font
 // void oledDriver::display10x16Char(unsigned char asciiChar, char posX, char posY) {				//Page is Y
 	
@@ -209,3 +218,25 @@ void oledDriver::display5x8Char(unsigned char asciiChar, char posX, char posY) {
 // 	sendDataArray(asciiData, 5);
 // }
 // void oledDriver::drawLine(char posX1, char posY2, char)
+#pragma endregion
+
+void oledDriver::displayTime(uint8_t hours, uint8_t minutes) {
+	uint8_t tensMinute = (minutes / 10) + numberOffset;
+	minutes = minutes % 10 + numberOffset;
+
+	
+	uint8_t tensHours = hours / 10 + numberOffset;
+	hours = hours % 10 + numberOffset;
+
+	// display5x8Char()
+}
+
+void oledDriver::displayHome() {
+	
+	//Display DAY:MON
+	splay5x8Char(numberOffset5x8Font + )
+}
+
+void oledDriver::displayTempPressure() {
+
+}
