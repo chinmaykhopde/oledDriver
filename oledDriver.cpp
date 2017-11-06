@@ -235,6 +235,7 @@ void oledDriver::displayHome() {
 
 	clearScreen();
 	//Display DAY:MON
+	
 	display5x8Char(2, homeDateStartLoc, 0x00);
 	//Space
 	setAreaToUpdate(0x00, 0x00, homeDateStartLoc + 5, homeDateStartLoc + 5 + 1);
@@ -279,7 +280,12 @@ void oledDriver::displayHome() {
 	display5x8Char(6, homeYearStartLoc + 18, 0x07);
 
 	//Time
-	display20x32Char(1, homeTimeStartLoc, 0x02);
+
+	// for (char j=0; j<0; j++){
+	display20x32Char(1, 0x0F, 0x02);
+	delay(1000);
+	display20x32Char(1, 0x0F, 0x02);
+	// }
 
 }
 
@@ -322,13 +328,13 @@ void oledDriver::displayTempPressure() {
 
 void oledDriver::display20x32Char(unsigned char asciiChar, char posX, char posY) {				//Page is Y
 	
-	unsigned char asciiAddress = (unsigned char) our20x32Font + asciiChar*5;
+	unsigned int asciiAddress = (unsigned char) our20x32Font + asciiChar*80;
 	setAreaToUpdate(posY, posY + 3, posX, posX + 19);
 	
 	char asciiData[20];
 	for (int j=0; j < 4; j++){
 		for(int i=0; i<20; i++) {
-			asciiData[i] = pgm_read_word_near(asciiAddress+i);
+			asciiData[i] = pgm_read_word_near(asciiAddress+i+j*20);
 		}
 	sendDataArray(asciiData ,20);
 	}
@@ -336,7 +342,7 @@ void oledDriver::display20x32Char(unsigned char asciiChar, char posX, char posY)
 
 void oledDriver::printNumber(long number){
 	clearScreen();
-char tmp[5] = {};
+	char tmp[5] = {};
 
 	for (int i=0; i<5; i++){
 		tmp[i] = number % 10;
