@@ -279,7 +279,7 @@ void oledDriver::displayHome() {
 	display5x8Char(6, homeYearStartLoc + 18, 0x07);
 
 	//Time
-	display20x32Char(1, homeTimeStartLoc)
+	display20x32Char(1, homeTimeStartLoc, 0x02);
 
 }
 
