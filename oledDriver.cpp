@@ -278,8 +278,8 @@ void oledDriver::displayHome() {
 	// 6
 	display5x8Char(6, homeYearStartLoc + 18, 0x07);
 
-	// display5x8Char(numberOffset5x8Font + 0x00, 0x2B, 0x00, 0x00);
-	// display5x8Char(numberOffset5x8Font + 27, 0x2B, 0x00, 0x00);
+	//Time
+	display20x32Char(1, homeTimeStartLoc)
 
 }
 
@@ -318,6 +318,32 @@ void oledDriver::displayTempPressure() {
 	horizontalLine(63);
 	horizontalLine(64);
 
+}
 
+void oledDriver::display20x32Char(unsigned char asciiChar, char posX, char posY) {				//Page is Y
+	
+	unsigned char asciiAddress = (unsigned char) our20x32Font + asciiChar*5;
+	setAreaToUpdate(posY, posY + 3, posX, posX + 19);
+	
+	char asciiData[20];
+	for (int j=0; j < 4; j++){
+		for(int i=0; i<20; i++) {
+			asciiData[i] = pgm_read_word_near(asciiAddress+i);
+		}
+	sendDataArray(asciiData ,20);
+	}
+}
 
+void oledDriver::printNumber(long number){
+	clearScreen();
+char tmp[5] = {};
+
+	for (int i=0; i<5; i++){
+		tmp[i] = number % 10;
+		number = number / 10;
+	}
+	for (int i=0; i<5; i++){
+		display5x8Char(tmp[4-i],i*5 , 0x00);
+
+	}
 }
