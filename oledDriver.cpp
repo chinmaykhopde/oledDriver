@@ -234,7 +234,7 @@ void oledDriver::displayTime(uint8_t hours, uint8_t minutes) {
 void oledDriver::displayHome() {
 
 	clearScreen();
-	//Display DAY:MON
+	//Display 26:JUN
 	
 	display5x8Char(2, homeDateStartLoc, 0x00);
 	//Space
@@ -281,11 +281,17 @@ void oledDriver::displayHome() {
 
 	//Time
 
-	// for (char j=0; j<0; j++){
-	display20x32Char(1, 0x0F, 0x02);
-	delay(1000);
-	display20x32Char(1, 0x0F, 0x02);
-	// }
+	//1
+	display20x32Char(1, homeTimeStartLoc, 0x02);
+	//Space 2
+	display20x32Char(2, homeTimeStartLoc + 20 + 3, 0x02);
+	// :
+	display20x32Char(10, homeTimeStartLoc + 43, 0x02);
+	//5
+	display20x32Char(5, homeTimeStartLoc + 63, 0x02);
+	// Space 6
+	display20x32Char(6, homeTimeStartLoc + 86, 0x02);
+
 
 }
 
