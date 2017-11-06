@@ -46,9 +46,15 @@ const unsigned char our5x8Font[] PROGMEM = {
 	0x63, 0x14, 0x08, 0x14, 0x63, // X  \x58 34
 	0x03, 0x04, 0x78, 0x04, 0x03, // Y  \x59 35
 	0x61, 0x59, 0x49, 0x4D, 0x43, // Z  \x5a 36
-	0x00, 0x14, 0x14, 0x00 // :   \x3a 37
+	0x00, 0x00, 0x14, 0x00 ,0x00, // :   \x3a 37
+	0x00, 0xfe, 0x03, 0xfe, 0x50, // Thermometer 38
+	0x00, 0xff, 0x00, 0xff, 0x55, // Thermometer 39
+	0x60, 0x9f, 0x80, 0x9f, 0x65 // Thermometer 40
 };
 
+//#defines for dislplay convinience
+#define homeDateStartLoc 0x2F //47
+#define homeYearStartLoc 0x35 //53
 //Arrow Sprites
 
 //#defines
@@ -136,6 +142,15 @@ public:
 
 	//The time displaying home screen
 	void displayHome();
+
+	//Display the Tempretute and Pressure screen
+	void displayTempPressure();
+
+	//Display Line on center of the Page
+	void displayLine(char);
+	
+	//horizontal Line
+	void horizontalLine(char);
 	
 };
 

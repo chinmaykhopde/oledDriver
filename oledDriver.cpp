@@ -193,7 +193,7 @@ void oledDriver::clearScreen() {
 void oledDriver::display5x8Char(unsigned char asciiChar, char posX, char posY) {				//Page is Y
 	
 	unsigned char asciiAddress = (unsigned char) our5x8Font + asciiChar*5;
-	setAreaToUpdate(posY, posY, posX, posX + 5);
+	setAreaToUpdate(posY, posY, posX, posX + 4);
 	
 	char asciiData[5];
 
@@ -221,22 +221,103 @@ void oledDriver::display5x8Char(unsigned char asciiChar, char posX, char posY) {
 #pragma endregion
 
 void oledDriver::displayTime(uint8_t hours, uint8_t minutes) {
-	uint8_t tensMinute = (minutes / 10) + numberOffset;
-	minutes = minutes % 10 + numberOffset;
+	uint8_t tensMinute = (minutes / 10);
+	minutes = minutes % 10;
 
 	
-	uint8_t tensHours = hours / 10 + numberOffset;
-	hours = hours % 10 + numberOffset;
+	uint8_t tensHours = hours / 10;
+	hours = hours % 10;
 
 	// display5x8Char()
 }
 
 void oledDriver::displayHome() {
-	
+
+	clearScreen();
 	//Display DAY:MON
-	splay5x8Char(numberOffset5x8Font + )
+	display5x8Char(2, homeDateStartLoc, 0x00);
+	//Space
+	setAreaToUpdate(0x00, 0x00, homeDateStartLoc + 5, homeDateStartLoc + 5 + 1);
+	sendData(0x00);
+	// 2
+	display5x8Char(6, homeDateStartLoc + 6, 0x00);
+	// :
+	display5x8Char(numberOffset5x8Font + 26, homeDateStartLoc + 11, 0x00);
+	// J
+	display5x8Char(19, homeDateStartLoc + 16, 0x00);
+	// Space
+	setAreaToUpdate(0x00, 0x00, homeDateStartLoc + 21, homeDateStartLoc + 21 + 1);
+	sendData(0x00);
+	// U
+	display5x8Char(30, homeDateStartLoc + 22, 0x00);
+	// Space
+	setAreaToUpdate(0x00, 0x00, homeDateStartLoc + 27, homeDateStartLoc + 27 + 1);
+	sendData(0x00);
+	// N
+	display5x8Char(23, homeDateStartLoc + 28, 0x00);
+
+	displayLine(0x01);
+
+	displayLine(0x06);
+
+	// 2
+	display5x8Char(2, homeYearStartLoc, 0x07);
+	// Space
+	setAreaToUpdate(0x07, 0x07, homeDateStartLoc + 5, homeDateStartLoc + 5 + 1);
+	sendData(0x00);
+	// 0
+	display5x8Char(0, homeYearStartLoc + 6, 0x07);
+	// Space
+	setAreaToUpdate(0x07, 0x07, homeDateStartLoc + 11, homeDateStartLoc + 11 + 1);
+	sendData(0x00);
+	// 1
+	display5x8Char(1, homeYearStartLoc + 12, 0x07);
+	//Space
+	setAreaToUpdate(0x07, 0x07, homeDateStartLoc + 17, homeDateStartLoc + 17 + 1);
+	sendData(0x00);
+	// 6
+	display5x8Char(6, homeYearStartLoc + 18, 0x07);
+
+	// display5x8Char(numberOffset5x8Font + 0x00, 0x2B, 0x00, 0x00);
+	// display5x8Char(numberOffset5x8Font + 27, 0x2B, 0x00, 0x00);
+
+}
+
+void oledDriver::displayLine(char page) {
+	char line[31] = {};
+	setAreaToUpdate(page, page, 0x00, 0x7F);
+	//Making array to send 
+	//only max 31 size arrey suported so two loops used
+	for (int i=0; i<31; i++){
+		line[i] = 0x18;
+	}
+	
+	for (int i=0; i <4; i++) {
+		sendDataArray(line, 31);
+		sendData(0x18);
+	}
+
+}
+
+void oledDriver::horizontalLine(char collum) {
+
+	char data [8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+	setAreaToUpdate(0x00, 0x07, collum, collum);
+	sendDataArray(data, 8);
 }
 
 void oledDriver::displayTempPressure() {
+	clearScreen();
+
+	//Thermometer sprite
+	display5x8Char(37, 31, 0x01);
+	display5x8Char(38, 31, 0x02);
+	display5x8Char(39, 31, 0x03);
+	
+
+	horizontalLine(63);
+	horizontalLine(64);
+
+
 
 }
