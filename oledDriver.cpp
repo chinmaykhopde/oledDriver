@@ -203,95 +203,162 @@ void oledDriver::display5x8Char(unsigned char asciiChar, char posX, char posY) {
 	sendDataArray(asciiData ,5);
 }
 
-#pragma regin
-//Draw 10x16 font
-// void oledDriver::display10x16Char(unsigned char asciiChar, char posX, char posY) {				//Page is Y
-	
-// 	unsigned char asciiAddress = (unsigned char) ourFonts + asciiChar*5;
-// 	setAreaToUpdate(posY, posY, posX, posX + 5);
-	
-// 	char asciiData[5];
-
-// 	for(int i=0; i<5; i++) {
-// 		asciiData[i] = pgm_read_word_near(asciiAddress+i);
-// 	}
-// 	sendDataArray(asciiData, 5);
-// }
-// void oledDriver::drawLine(char posX1, char posY2, char)
-#pragma endregion
-
-void oledDriver::displayTime(uint8_t hours, uint8_t minutes) {
-	uint8_t tensMinute = (minutes / 10);
-	minutes = minutes % 10;
-
-	
-	uint8_t tensHours = hours / 10;
-	hours = hours % 10;
-
-	// display5x8Char()
-}
-
-void oledDriver::displayHome() {
+void oledDriver::displayHome(DateTime& dt) {
 
 	clearScreen();
-	//Display 26:JUN
-	
-	display5x8Char(2, homeDateStartLoc, 0x00);
-	//Space
-	setAreaToUpdate(0x00, 0x00, homeDateStartLoc + 5, homeDateStartLoc + 5 + 1);
-	sendData(0x00);
-	// 2
-	display5x8Char(6, homeDateStartLoc + 6, 0x00);
+	//Day
+	uint8_t day = dt.day();
+	uint8_t tensDay = day /10;
+	day = day %10;
+
+	display5x8Char(tensDay, homeDateStartLoc, 0x00);
+	//Space  2
+	display5x8Char(day, homeDateStartLoc + 6, 0x00);
 	// :
 	display5x8Char(numberOffset5x8Font + 26, homeDateStartLoc + 11, 0x00);
-	// J
-	display5x8Char(19, homeDateStartLoc + 16, 0x00);
-	// Space
-	setAreaToUpdate(0x00, 0x00, homeDateStartLoc + 21, homeDateStartLoc + 21 + 1);
-	sendData(0x00);
-	// U
-	display5x8Char(30, homeDateStartLoc + 22, 0x00);
-	// Space
-	setAreaToUpdate(0x00, 0x00, homeDateStartLoc + 27, homeDateStartLoc + 27 + 1);
-	sendData(0x00);
-	// N
-	display5x8Char(23, homeDateStartLoc + 28, 0x00);
+	
+	//Month
+	switch (dt.month()) {
+		case 1:
+			// J
+			display5x8Char(19, homeDateStartLoc + 16, 0x00);
+			// Space A
+			display5x8Char(10, homeDateStartLoc + 22, 0x00);
+			// Space N
+			display5x8Char(23, homeDateStartLoc + 28, 0x00);
+			break;
+		case 2:
+			// F
+			display5x8Char(15, homeDateStartLoc + 16, 0x00);
+			// Space E
+			display5x8Char(14, homeDateStartLoc + 22, 0x00);
+			// Space B
+			display5x8Char(11, homeDateStartLoc + 28, 0x00);
+			break;
+		case 3:
+			// M
+			display5x8Char(22, homeDateStartLoc + 16, 0x00);
+			// Space A
+			display5x8Char(10, homeDateStartLoc + 22, 0x00);
+			// Space R
+			display5x8Char(27, homeDateStartLoc + 28, 0x00);
+			break;
+		case 4:
+			// A
+			display5x8Char(10, homeDateStartLoc + 16, 0x00);
+			// Space P
+			display5x8Char(25, homeDateStartLoc + 22, 0x00);
+			// Space R
+			display5x8Char(27, homeDateStartLoc + 28, 0x00);
+			break;
+		case 5:
+			// M
+			display5x8Char(22, homeDateStartLoc + 16, 0x00);
+			// Space A
+			display5x8Char(10, homeDateStartLoc + 22, 0x00);
+			// Space Y
+			display5x8Char(34, homeDateStartLoc + 28, 0x00);
+			break;
+		case 6:
+			// J
+			display5x8Char(19, homeDateStartLoc + 16, 0x00);
+			// Space U
+			display5x8Char(30, homeDateStartLoc + 22, 0x00);
+			// Space N
+			display5x8Char(23, homeDateStartLoc + 28, 0x00);
+			break;
+		case 7:
+			// J
+			display5x8Char(19, homeDateStartLoc + 16, 0x00);
+			// Space U
+			display5x8Char(30, homeDateStartLoc + 22, 0x00);
+			// Space L
+			display5x8Char(21, homeDateStartLoc + 28, 0x00);
+			break;
+		case 8:
+			// A
+			display5x8Char(10, homeDateStartLoc + 16, 0x00);
+			// Space U
+			display5x8Char(30, homeDateStartLoc + 22, 0x00);
+			// Space G
+			display5x8Char(18, homeDateStartLoc + 28, 0x00);
+			break;
+		case 9:
+			// S
+			display5x8Char(28, homeDateStartLoc + 16, 0x00);
+			// Space E
+			display5x8Char(14, homeDateStartLoc + 22, 0x00);
+			// Space P
+			display5x8Char(25, homeDateStartLoc + 28, 0x00);
+			break;
+		case 10:
+			// O
+			display5x8Char(24, homeDateStartLoc + 16, 0x00);
+			// Space C
+			display5x8Char(13, homeDateStartLoc + 22, 0x00);
+			// Space T
+			display5x8Char(29, homeDateStartLoc + 28, 0x00);
+			break;
+		case 11:
+			// N
+			display5x8Char(23, homeDateStartLoc + 16, 0x00);
+			// Space O
+			display5x8Char(24, homeDateStartLoc + 22, 0x00);
+			// Space V
+			display5x8Char(31, homeDateStartLoc + 28, 0x00);
+			break;
+		case 12:
+			// D
+			display5x8Char(13, homeDateStartLoc + 16, 0x00);
+			// Space E
+			display5x8Char(14, homeDateStartLoc + 22, 0x00);
+			// Space C
+			display5x8Char(13, homeDateStartLoc + 28, 0x00);
+			break;
+	}
+
 
 	displayLine(0x01);
 
 	displayLine(0x06);
 
+	//Year
+	uint8_t year = (uint8_t)(dt.year() - 2000);
+
+	uint8_t yearAr[3] = {};
+	
+	for (char i=0; i<3; i++){
+		yearAr[i] = year % 10;
+		year = year / 10;
+	}
 	// 2
 	display5x8Char(2, homeYearStartLoc, 0x07);
-	// Space
-	setAreaToUpdate(0x07, 0x07, homeDateStartLoc + 5, homeDateStartLoc + 5 + 1);
-	sendData(0x00);
-	// 0
-	display5x8Char(0, homeYearStartLoc + 6, 0x07);
-	// Space
-	setAreaToUpdate(0x07, 0x07, homeDateStartLoc + 11, homeDateStartLoc + 11 + 1);
-	sendData(0x00);
-	// 1
-	display5x8Char(1, homeYearStartLoc + 12, 0x07);
-	//Space
-	setAreaToUpdate(0x07, 0x07, homeDateStartLoc + 17, homeDateStartLoc + 17 + 1);
-	sendData(0x00);
-	// 6
-	display5x8Char(6, homeYearStartLoc + 18, 0x07);
+	// Space 0
+	display5x8Char(yearAr[2], homeYearStartLoc + 6, 0x07);
+	// Space 1
+	display5x8Char(yearAr[1], homeYearStartLoc + 12, 0x07);
+	//Space 6
+	display5x8Char(yearAr[0], homeYearStartLoc + 18, 0x07);
 
 	//Time
+	uint8_t hours = dt.hour();
+	uint8_t minutes = dt.minute();
 
+	uint8_t tensMinute = (minutes / 10);
+	minutes = minutes % 10;
+
+	uint8_t tensHours = hours / 10;
+	hours = hours % 10;
 	//1
-	display20x32Char(1, homeTimeStartLoc, 0x02);
+	display20x32Char(tensHours, homeTimeStartLoc, 0x02);
 	//Space 2
-	display20x32Char(2, homeTimeStartLoc + 20 + 3, 0x02);
+	display20x32Char(hours, homeTimeStartLoc + 20 + 3, 0x02);
 	// :
 	display20x32Char(10, homeTimeStartLoc + 43, 0x02);
 	//5
-	display20x32Char(5, homeTimeStartLoc + 63, 0x02);
+	display20x32Char(tensMinute, homeTimeStartLoc + 63, 0x02);
 	// Space 6
-	display20x32Char(6, homeTimeStartLoc + 86, 0x02);
-
+	display20x32Char(minutes, homeTimeStartLoc + 86, 0x02);
 
 }
 
@@ -318,16 +385,21 @@ void oledDriver::horizontalLine(char collum) {
 	sendDataArray(data, 8);
 }
 
-void oledDriver::displayTempPressure() {
+void oledDriver::displayTempPressure(short temprature, long pressure) {
 	clearScreen();
 
 	//Thermometer sprite
 	display5x8Char(37, 31, 0x01);
 	display5x8Char(38, 31, 0x02);
 	display5x8Char(39, 31, 0x03);
-	
+
+	//Thermometer data
+
+	printNumber((long)temprature);
+	//Altitude Sprite
 
 	horizontalLine(63);
+	
 	horizontalLine(64);
 
 }
@@ -356,6 +428,5 @@ void oledDriver::printNumber(long number){
 	}
 	for (int i=0; i<5; i++){
 		display5x8Char(tmp[4-i],i*5 , 0x00);
-
 	}
 }
