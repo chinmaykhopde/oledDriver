@@ -1,8 +1,11 @@
-
+//Code by
+//Chinmay Khopde and Viraj Sonawne
+//Alot of improve ments can be done here for example the 
 #include <TinyWireM.h>
 #include <USI_TWI_Master.h>
 #include "oledDriver.h"
 
+//
 void oledDriver::init(){
 
 	TinyWireM.begin();
@@ -20,6 +23,7 @@ void oledDriver::init(){
 	/*Set Address location for the display in the RAM and 
 	  the collums and pages in RAM to be sent to the display 
 	*/
+
 	//used to set the first page and last page to be used 
 	//only for horizontal and vertical addressing modes
 	sendCommand(setPageAddress);
@@ -57,7 +61,6 @@ void oledDriver::init(){
 	//Set COM output scan direction
 	sendCommand(setCOMOutputScanDirectionNormal);
 
-
 	//Set pre-charge period
 	sendCommand(setPrechargePeriod);
 	sendCommand(0xF1);
@@ -65,7 +68,7 @@ void oledDriver::init(){
 	//Set com pins hardware configuration to 0x12
 	sendCommand(setCOMHardwareConfig);
 	sendCommand(0x12);
-		
+
 	//Set Vcomh (What is Vcomh ???????????)
 	sendCommand(setVCOMHDeselectLevel);
 	sendCommand(0x30);
@@ -385,7 +388,7 @@ void oledDriver::horizontalLine(char collum) {
 	sendDataArray(data, 8);
 }
 
-void oledDriver::displayTempPressure(short temprature, long pressure) {
+void oledDriver::displayTempPressure(long temprature, long pressure) {
 	clearScreen();
 
 	//Thermometer sprite
@@ -395,9 +398,11 @@ void oledDriver::displayTempPressure(short temprature, long pressure) {
 
 	//Thermometer data
 
-	printNumber((long)temprature);
+	printTemprature(temprature, 20, 0x06);
 	//Altitude Sprite
-
+	printPressure(pressure , 84, 0x06);
+	//Altidude data
+	// printNumber(pressure, 90, 0x06);
 	horizontalLine(63);
 	
 	horizontalLine(64);
@@ -418,15 +423,78 @@ void oledDriver::display20x32Char(unsigned char asciiChar, char posX, char posY)
 	}
 }
 
-void oledDriver::printNumber(long number){
-	clearScreen();
+void oledDriver::printNumber(long number, char posX, char posY){								//Page is Y
 	char tmp[5] = {};
 
-	for (int i=0; i<5; i++){
+	setAreaToUpdate(posY, posY, posX, posX + 22);
+
+	unsigned char asciiAddress = (unsigned char) our5x8Font + 40*5;
+
+	for (int i=0; i<5; i++) {
 		tmp[i] = number % 10;
 		number = number / 10;
 	}
-	for (int i=0; i<5; i++){
-		display5x8Char(tmp[4-i],i*5 , 0x00);
+	for (int i=0; i<5; i++) {
+		display5x8Char(tmp[4-i], i*5 , posY);
+		// if (i==2) {
+		// 	for(int i=0; i<3; i++) {
+		// 		tmp[i] = pgm_read_word_near(asciiAddress + i);
+		// 	}
+		// 	sendDataArray(tmp ,4);
+		// }
 	}
+}
+
+void oledDriver::printTemprature(long temp, char posX, char posY) {
+	unsigned char temprature[3] = {};
+	unsigned char decimal [3] = {0x00, 0x40, 0x00};
+	unsigned char degree [3] = {0x00, 0x02, 0x00};
+
+	// setAreaToUpdate(posY, posY, posX, posX + 19);
+
+		for(char i = 0; i<3; i++) {
+				temprature[i] = temp % 10;
+				temp = temp / 10;
+				// decimal[i] = pgm_read_word_near(asciiAddress);
+				// degree[i] = pgm_read_word_near(asciiAddress + 3);
+		}
+
+	display5x8Char(temprature[2], posX, posY);
+	display5x8Char(temprature[1], posX + 6, posY);
+	
+	setAreaToUpdate(posY, posY, posX + 11, posX + 11 +2);
+	sendDataArray(decimal, 3);
+
+	display5x8Char(temprature [0],  posX + 14, posY);
+	
+	setAreaToUpdate(posY, posY, posX + 19, posX + 19 + 2 );
+	sendDataArray(degree, 3);
+
+	display5x8Char (numberOffset5x8Font + 2, posX + 22, posY);
+}
+
+void oledDriver::printPressure(long pressure, char posX, char posY) {
+	unsigned char press [4] = {};
+	unsigned char decimal [3] = {0x00, 0x40, 0x00};
+	unsigned char degree [3] = {0x00, 0x02, 0x00};
+
+
+	for(char i = 0; i<4; i++) {
+		press[i] = pressure % 10;
+		pressure = pressure / 10;
+	}
+
+	display5x8Char(press[3], posX, posY);
+
+	setAreaToUpdate(posY, posY, posX + 5, posX + 5 +2);
+	sendDataArray(decimal, 3);
+
+	display5x8Char(press[2], posX + 8, posY);
+
+
+	display5x8Char(press[1],  posX + 13, posY);
+
+	display5x8Char(press[0],  posX + 19, posY);
+
+	display5x8Char (numberOffset5x8Font + 1, posX + 25, posY);
 }

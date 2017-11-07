@@ -51,6 +51,7 @@ const unsigned char our5x8Font[] PROGMEM = {
 	0x00, 0xfe, 0x03, 0xfe, 0x50, // Thermometer 38
 	0x00, 0xff, 0x00, 0xff, 0x55, // Thermometer 39
 	0x60, 0x9f, 0x80, 0x9f, 0x65 // Thermometer 40
+
 };
 
 const unsigned char our20x32Font[] PROGMEM = {
@@ -67,9 +68,9 @@ const unsigned char our20x32Font[] PROGMEM = {
 	/* : */0, 0, 0, 0, 0, 0, 0, 0, 192, 192, 192, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 192, 192, 192, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0
 };
 //#defines for dislplay convinience
-#define homeDateStartLoc 					0x2F //47
-#define homeYearStartLoc 					0x35 //53
-#define homeTimeStartLoc 					0x0A //52
+#define homeDateStartLoc 					0x2F 	//47
+#define homeYearStartLoc 					0x35 	//53
+#define homeTimeStartLoc 					0x0A 	//52
 //Arrow Sprites
 
 //#defines
@@ -159,7 +160,7 @@ public:
 	void displayHome(DateTime& );
 
 	//Display the Tempretute and Pressure screen
-	void displayTempPressure(short, long);
+	void displayTempPressure(long, long);
 
 	//Display Line on center of the Page
 	void displayLine(char);
@@ -168,7 +169,11 @@ public:
 	void horizontalLine(char);
 
 	//puse screen as serial
-	void printNumber(long);
+	void printNumber(long ,char, char);
+
+	void printTemprature(long , char, char);
+
+	void printPressure(long, char, char);
 	
 };
 
