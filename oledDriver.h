@@ -9,7 +9,19 @@
 
 //Our Fonts
 
-//5x8 Font
+// 5x8 Font
+const unsigned char thermometer[15] {
+	0x00, 0xfe, 0x03, 0xfe, 0x50, // Thermometer 38
+	0x00, 0xff, 0x00, 0xff, 0x55, // Thermometer 39
+	0x60, 0x9f, 0x80, 0x9f, 0x65 // Thermometer 40
+};
+
+const unsigned char altimeter[15] {
+	0x00, 0xfe, 0x03, 0xfe, 0x50, // Thermometer 38
+	0x00, 0xff, 0x00, 0xff, 0x55, // Thermometer 39
+	0x60, 0x9f, 0x80, 0x9f, 0x65 // Thermometer 40
+};
+
 const unsigned char our5x8Font[] PROGMEM = {
 	0x3E, 0x51, 0x49, 0x45, 0x3E, // 0  \x30 0
 	0x00, 0x42, 0x7F, 0x40, 0x00, // 1  \x31 1
@@ -37,20 +49,17 @@ const unsigned char our5x8Font[] PROGMEM = {
 	0x7F, 0x04, 0x08, 0x10, 0x7F, // N  \x4e 24
 	0x3E, 0x41, 0x41, 0x41, 0x3E, // O  \x4f 25
 	0x7F, 0x09, 0x09, 0x09, 0x06, // P  \x50 26
-	0x3E, 0x41, 0x51, 0x21, 0x5E, // Q  \x51 27
+	// 0x3E, 0x41, 0x51, 0x21, 0x5E, // Q  \x51 27
 	0x7F, 0x09, 0x19, 0x29, 0x46, // R  \x52 28
 	0x26, 0x49, 0x49, 0x49, 0x32, // S  \x53 29
 	0x03, 0x01, 0x7F, 0x01, 0x03, // T  \x54 30
 	0x3F, 0x40, 0x40, 0x40, 0x3F, // U  \x55 31
 	0x1F, 0x20, 0x40, 0x20, 0x1F, // V  \x56 32
-	0x3F, 0x40, 0x38, 0x40, 0x3F, // W  \x57 33
-	0x63, 0x14, 0x08, 0x14, 0x63, // X  \x58 34
+	// 0x3F, 0x40, 0x38, 0x40, 0x3F, // W  \x57 33
+	// 0x63, 0x14, 0x08, 0x14, 0x63, // X  \x58 34
 	0x03, 0x04, 0x78, 0x04, 0x03, // Y  \x59 35
-	0x61, 0x59, 0x49, 0x4D, 0x43, // Z  \x5a 36
-	0x00, 0x00, 0x14, 0x00 ,0x00, // :   \x3a 37
-	0x00, 0xfe, 0x03, 0xfe, 0x50, // Thermometer 38
-	0x00, 0xff, 0x00, 0xff, 0x55, // Thermometer 39
-	0x60, 0x9f, 0x80, 0x9f, 0x65 // Thermometer 40
+	// 0x61, 0x59, 0x49, 0x4D, 0x43, // Z  \x5a 36
+	0x00, 0x00, 0x14, 0x00 ,0x00 // :   \x3a 37
 
 };
 
@@ -65,8 +74,13 @@ const unsigned char our20x32Font[] PROGMEM = {
 	/* 7 */0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 134, 230, 126, 30, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 224, 120, 30, 7, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 224, 120, 30, 7, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 96, 120, 30, 7, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	/* 8 */0, 192, 224, 120, 56, 28, 12, 14, 6, 6, 6, 6, 6, 6, 6, 12, 56, 240, 224, 0, 0, 31, 127, 224, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 224, 176, 31, 31, 0, 0, 254, 255, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 255, 255, 0, 0, 3, 7, 15, 24, 48, 96, 96, 96, 96, 96, 96, 96, 48, 56, 28, 14, 7, 3, 0,
 	/* 9 */0, 192, 224, 120, 56, 28, 12, 14, 6, 6, 6, 6, 6, 6, 6, 12, 56, 240, 224, 0, 0, 3, 15, 60, 112, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 96, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 0, 0, 0, 7, 15, 24, 48, 96, 96, 96, 96, 96, 96, 96, 48, 56, 28, 14, 7, 3, 0,
-	/* : */0, 0, 0, 0, 0, 0, 0, 0, 192, 192, 192, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 192, 192, 192, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0
+	/* : */0, 0, 0, 0, 0, 0, 0, 0, 192, 192, 192, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 192, 192, 192, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0,
+		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		   0, 0, 0, 0, 0, 0, 0, 0, 60, 60, 60, 60, 0, 0, 0, 0, 0, 0, 0, 0
 };
+
 //#defines for dislplay convinience
 #define homeDateStartLoc 					0x2F 	//47
 #define homeYearStartLoc 					0x35 	//53
@@ -129,6 +143,9 @@ const unsigned char our20x32Font[] PROGMEM = {
 
 class oledDriver {
 public:
+
+	char screen = 1;
+	bool oldChangeScreenPinStatus = 1;
 	//Initialises the OLED
 	void init();
 
@@ -165,15 +182,28 @@ public:
 	//Display Line on center of the Page
 	void displayLine(char);
 	
-	//horizontal Line
+	//Draw at given character horizontal Line
 	void horizontalLine(char);
 
-	//puse screen as serial
+	//use screen as serial
 	void printNumber(long ,char, char);
 
-	void printTemprature(long , char, char);
+	void printFloat20x32(float, char, char);
 
+	//Print the temprature
+	void printTemprature(long , char, char);
+	
+	//Print the pressure
 	void printPressure(long, char, char);
+
+	//Dislplay the Compass page
+	void displayCompass(float);
+
+	//Display the Thermmeter sprite
+	// void displayThermo( unsigned char, char, char);
+
+	//Change screen according to switch
+	// void changeScreen();
 	
 };
 

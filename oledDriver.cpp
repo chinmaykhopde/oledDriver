@@ -1,9 +1,11 @@
 //Code by
 //Chinmay Khopde and Viraj Sonawne
-//Alot of improve ments can be done here for example the 
+//A lot of improve ments can be done here for example the 
 #include <TinyWireM.h>
 #include <USI_TWI_Master.h>
 #include "oledDriver.h"
+
+#define changeScreenPin 4
 
 //
 void oledDriver::init(){
@@ -86,6 +88,9 @@ void oledDriver::init(){
 
 	//Set entire display on
 	sendCommand(setDisplayOn);
+
+	//For the change home screen page
+    pinMode(changeScreenPin, INPUT);
 
 }
 
@@ -206,6 +211,18 @@ void oledDriver::display5x8Char(unsigned char asciiChar, char posX, char posY) {
 	sendDataArray(asciiData ,5);
 }
 
+// void oledDriver::displayThermo(unsigned char asciiChar, char posX, char posY) {				//Page is Y
+	
+// 	unsigned char asciiAddress = (unsigned char) thermometer + asciiChar*5;
+// 	setAreaToUpdate(posY, posY, posX, posX + 4);
+	
+// 	char asciiData[5];
+
+// 	for(int i=0; i<5; i++) {
+// 		asciiData[i] = pgm_read_word_near(asciiAddress+i);
+// 	}
+// 	sendDataArray(asciiData ,5);
+// }
 void oledDriver::displayHome(DateTime& dt) {
 
 	clearScreen();
@@ -218,7 +235,7 @@ void oledDriver::displayHome(DateTime& dt) {
 	//Space  2
 	display5x8Char(day, homeDateStartLoc + 6, 0x00);
 	// :
-	display5x8Char(numberOffset5x8Font + 26, homeDateStartLoc + 11, 0x00);
+	display5x8Char(32, homeDateStartLoc + 11, 0x00);
 	
 	//Month
 	switch (dt.month()) {
@@ -296,7 +313,7 @@ void oledDriver::displayHome(DateTime& dt) {
 			break;
 		case 10:
 			// O
-			display5x8Char(24, homeDateStartLoc + 16, 0x00);
+			display5x8Char(21, homeDateStartLoc + 16, 0x00);
 			// Space C
 			display5x8Char(13, homeDateStartLoc + 22, 0x00);
 			// Space T
@@ -308,7 +325,7 @@ void oledDriver::displayHome(DateTime& dt) {
 			// Space O
 			display5x8Char(24, homeDateStartLoc + 22, 0x00);
 			// Space V
-			display5x8Char(31, homeDateStartLoc + 28, 0x00);
+			display5x8Char(30, homeDateStartLoc + 28, 0x00);
 			break;
 		case 12:
 			// D
@@ -392,9 +409,15 @@ void oledDriver::displayTempPressure(long temprature, long pressure) {
 	clearScreen();
 
 	//Thermometer sprite
-	display5x8Char(37, 31, 0x01);
-	display5x8Char(38, 31, 0x02);
-	display5x8Char(39, 31, 0x03);
+	// displayThermo(0, 31, 0x01);
+	// displayThermo(1, 31, 0x02);
+	// displayThermo(2, 31, 0x03);
+
+	setAreaToUpdate(0x01, 0x03, 31, 31 + 4);
+	
+	// char asciiData[5];
+
+	sendDataArray(thermometer ,15);
 
 	//Thermometer data
 
@@ -407,6 +430,24 @@ void oledDriver::displayTempPressure(long temprature, long pressure) {
 	
 	horizontalLine(64);
 
+	//dsiplay ALTIMETER BITMAP
+	setAreaToUpdate(0x01, 0x03, 97, 97 + 4);
+	
+	// char asciiData[5];
+
+	sendDataArray(altimeter ,15);
+
+
+}
+
+void oledDriver::displayCompass (float heading) {
+	clearScreen();
+
+	display5x8Char(23, 61, 0x00);
+
+	display5x8Char(27, 61, 0x07);
+
+	printFloat20x32(heading, 17, 0x02);	
 }
 
 void oledDriver::display20x32Char(unsigned char asciiChar, char posX, char posY) {				//Page is Y
@@ -476,7 +517,6 @@ void oledDriver::printTemprature(long temp, char posX, char posY) {
 void oledDriver::printPressure(long pressure, char posX, char posY) {
 	unsigned char press [4] = {};
 	unsigned char decimal [3] = {0x00, 0x40, 0x00};
-	unsigned char degree [3] = {0x00, 0x02, 0x00};
 
 
 	for(char i = 0; i<4; i++) {
@@ -489,12 +529,54 @@ void oledDriver::printPressure(long pressure, char posX, char posY) {
 	setAreaToUpdate(posY, posY, posX + 5, posX + 5 +2);
 	sendDataArray(decimal, 3);
 
-	display5x8Char(press[2], posX + 8, posY);
+	display5x8Char(press[2], posX + 7, posY);
 
+	display5x8Char(press[1],  posX + 14, posY);
 
-	display5x8Char(press[1],  posX + 13, posY);
+	display5x8Char(press[0],  posX + 20, posY);
 
-	display5x8Char(press[0],  posX + 19, posY);
-
-	display5x8Char (numberOffset5x8Font + 1, posX + 25, posY);
+	display5x8Char (numberOffset5x8Font + 1, posX + 26, posY);
 }
+
+void oledDriver::printFloat20x32(float heading, char posX, char posY) {
+	
+	int higherVal = (int) heading;
+	
+	float tmp = heading - higherVal;
+	char decimal = 0;
+	decimal = (tmp *10) - tmp;
+
+	unsigned char head [3] = {};
+
+	for(char i = 0; i<3; i++) {
+		head[i] = higherVal % 10;
+		higherVal = higherVal / 10;
+	}
+
+	
+	display20x32Char(head[2], posX, posY);
+	display20x32Char(head[1], posX + 20 + 3, posY);
+	display20x32Char(head[0], posX + 43 + 3, posY);
+
+	//Decimal Printing
+	display20x32Char(11, posX + 68, posY);
+
+	display20x32Char(decimal,  posX + 86, posY);
+
+	// setAreaToUpdate(posY, posY, posX + 18, posX + 18 +2);
+	// sendDataArray(degree, 3);
+}
+
+// void oledDriver::changeScreen() {
+// 	if (digitalRead(changeScreenPin) != oldChangeScreenPinStatus) {
+// 		if (digitalRead(changeScreenPin) == LOW){
+// 			screen = screen+1;
+// 			displayLine(0x00);
+// 			// printNumber((long)screen, 0x00, 0x00);
+// 		}
+// 		if (screen>3){
+// 			screen = 1;
+// 		}
+// 	}
+// 	oldChangeScreenPinStatus = digitalRead(changeScreenPin);
+// }

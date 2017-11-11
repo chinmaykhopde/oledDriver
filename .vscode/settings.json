@@ -5,6 +5,13 @@
         "xstring": "cpp",
         "algorithm": "cpp",
         "forward_list": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "future": "cpp",
+        "system_error": "cpp",
+        "chrono": "cpp",
+        "array": "cpp",
+        "vector": "cpp",
+        "xutility": "cpp",
+        "cmath": "cpp"
     }
 }
